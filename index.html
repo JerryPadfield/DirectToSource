@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_blank">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Source FM - Fresh Sources - Record Your Contribution</title>
+<link href="css/source-record.css" rel="stylesheet" />
+    <style>
+.iframe-container {
+    position: relative;
+    margin: 0px;
+    height: 0;
+    overflow: hidden;
+    padding: 0px 0px 800px 0px; /* padding-bottom = h/w as a % */
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+/* put following styles (necessary for overflow and
+scrolling handling) in div container around iframe
+because not stable in CSS
+-webkit-overflow-scrolling: touch;
+overflow: auto; 
+    -webkit-transform:scale(0.5);
+    -moz-transform-scale(0.5);
+*/
+}
+	#iframeUploader {
+		width: 100%;
+	}
+img#FreshSources {
+width: 75%;
+}
+img#UWSImg {
+float:right;
+}
+iframe {
+border: 0px;
+overflow:hidden;
+}
+    </style>
+  </head>
+  <body>
+<div id="headerDiv">
+<img src="images/fresh%20sources%20logo-trans.png" id="FreshSources" alt="Fresh Sources" title="Fresh Sources" />
+<a href="https://uws.ac.uk" target="_blank"><img height="100" width="142" id="UWSImg" src="images/UWS-logo.jpg" alt="University of the West of Scotland" title="University of the West of Scotland" /></a>
+    <h1 id="logo">My Community: Direct to the Source</h1>
+</div>
+<!-- main content -->
+<div class="row" id="content">
+<p><a href="https://www.thesourcefm.co.uk/" target="_blank">Source FM</a> is always looking for new voices to have their say on the airwaves. This web page is an experiment in getting your voices direct onto the Source FM. Please record your thoughts around the subject &quot;My Community&quot;</p>
+<p>This web page uses experimental internet technologies and so requires a modern, standards-compliant browser such as Chrome, Firefox, Opera. Other browsers will probably not work (sorry...), but you can still upload a file you've already recorded.
+</p>
+    <p>Record your audio below and upload to the Source. Press the record button to begin your recording, and stop to finish. Listen back with the Play button. When you are happy fill in your name and email details and click Submit to send your recording to the Source FM. Recordings will be edited and compiled into a show for broadcast on the Source. By submitting your audio you give Source FM the right to broadcast it. You retain the copyright. You can download your recording (in <a href="https://fileinfo.com/extension/webm" target="_blank">Webm format</a>) using the link which will appear. If you change your mind and no longer want us to use your recording you can contact us at <a href="mailto:jerry@thesourcefm.co.uk">the source</a> and we will delete your recording.</p>
+<p>
+Ideas for recordings:
+<ul>
+<li>Information about Falmouth/Penryn</li>
+<li>Your community in Falmouth/Penryn</li>
+<li>What are the good things and bad things about living in Falmouth/Penryn</li>
+<li>Messages to people you know</li>
+<li>Moved away? What do you miss about the area?</li>
+<li>Recordings of places in Falmouth/Penryn (you could record the sea on Gyllyngvase, the traffic on the Moor, the birds in your back garden, or the sound of a Sunday morning lie-in).</li>
+<li>Got a favourite piece of music that reminds you of the area or a dedication?</li>
+</ul>
+<p>
+Please note: by clicking the submit button, you agree to the <a href="terms-and-conditions.html">terms and conditions</a>.
+</p>
+</div>
+
+<!-- server side code -->
+<div class="iframe-container" style="-webkit-overflow-scrolling: touch; overflow: hidden;">
+<iframe seamless id="iframeUploader" width="600" height="800" allow="microphone" allowusermedia src="https://script.google.com/macros/s/AKfycbwPQgvYCFDbB7iuvchJWDYwe92UyGPtlkHc8IdzSiAIpF8O9cc/exec"><p style="font-size: 110%;"><em><strong>IFRAME: </strong> There is iframe content being displayed here but your browser version does not support iframes.</em> Please update your browser to its most recent version and try again.</p> </iframe>
+</div>
+<div class="footer">
+<hr />
+<p>Software created by Jerry Padfield 2018 as part of the <a target="_blank" href="https://www.uws.ac.uk/study/postgraduate/postgraduate-course-search/creative-media-practice/">MA Creative Media Practice</a> at <a target="_blank" href="https://uws.ac.uk">University of the West of Scotland</a>.
+</p>
+</div>
+  </body>
+</html>
