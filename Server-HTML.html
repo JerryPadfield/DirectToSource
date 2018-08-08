@@ -10,9 +10,16 @@
       replace audio record object with UI that shows recording status
       overlay reporting success - hide GUI
       allow file uploads
+      loader isn't circular
+      when uploading don't replace format
+      Success message - too short and can't see
       -->
       <!-- Some code adapted from code by Amit Agarwal amit@labnol.org -->
 <style>
+div {
+    display: inline;
+}
+audio { width: 200px; }
 input, textarea {
     border: 4px solid rgba(0,0,0,0.1);
     padding: 8px 10px;
@@ -33,11 +40,12 @@ input, textarea {
     z-index: 1; /* Add a z-index if needed */
     margin-left: -125px; /* Divide value of min-width by 2 */
     left: 50%; /* Center the snackbar */
-    top: 50px;
+    top: 50%;
+    min-height: 250px;
+    margin-top: -125px;
 }
 #uploading.show {
     visibility: visible;
-
 }
 #progress {
 	text-align: center;
@@ -53,7 +61,7 @@ input, textarea {
     position: fixed; /* Sit on top of the screen */
     z-index: 1; /* Add a z-index if needed */
     left: 50%; /* Center the snackbar */
-    bottom: 30px; /* 30px from the bottom */
+    bottom: 50%; /* 30px from the bottom */
 }
 #progress.show {
     visibility: visible; /* Show the snackbar */
@@ -66,36 +74,38 @@ However, delay the fade out process for 2.5 seconds */
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadeinmove {
     from {bottom: 0; opacity: 0;} 
-    to {bottom: 30px; opacity: 1;}
+    to {bottom: 50%; opacity: 1;}
 }
 
 @keyframes fadeinmove {
     from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
+    to {bottom: 50%; opacity: 1;}
 }
 
 @-webkit-keyframes fadeoutmove {
-    from {bottom: 30px; opacity: 1;} 
+    from {bottom: 50%; opacity: 1;} 
     to {bottom: 0; opacity: 0;}
 }
 
 @keyframes fadeoutmove {
-    from {bottom: 30px; opacity: 1;}
+    from {bottom: 50%; opacity: 1;}
     to {bottom: 0; opacity: 0;}
 }
 #success {
+  padding: 20px;
+ text-align: center;
 	margin: auto;
 	display: none;
 	position: fixed; /* Sit on top of the page content */
     width: 100%; /* Full width (cover the whole page) */
     height: 100%; /* Full height (cover the whole page) */
-    top: 0; 
+    top: 25%; 
     left: 0;
     right: 0;
     bottom: 0;
  /*   background-color: rgba(0,0,0,0.5); */ /* Black background with opacity */
     z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
+    /* cursor: pointer;  Add a pointer on hover */
 }
 #switchLink {
     font-size: smaller;
@@ -104,11 +114,12 @@ However, delay the fade out process for 2.5 seconds */
 	color:red;
 }
 .loader {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
+    display: block;
+    border: 32px solid #f3f3f3; /* Light grey */
+    border-top: 32px solid #3498db; /* Blue */
     border-radius: 50%;
-    width: 68px;
-    height: 68px;
+    width: 150px;
+    height: 150px;
     animation: spin 2s linear infinite;
     margin:auto;
 }
@@ -136,7 +147,7 @@ However, delay the fade out process for 2.5 seconds */
   */
   padding: 20px;
   border-radius: 10px;
-  text-align: center;
+  /* text-align: center;
 /*  transition: visibility 0s linear 0.0s, opacity 0.0s linear;
   opacity: 1;
   */
@@ -176,25 +187,25 @@ However, delay the fade out process for 2.5 seconds */
   outline: none;
 }
 #playButtonSVG {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
 }
 #playButtonSVG:hover {
   fill: silver;
 }
 #dbSVG {
-width: 50px;
-height: 50px;
+    width: 100px;
+    height: 100px;
 }
 #Capa_1 {
-  fill: red;
-  width: 50px;
-  height: 50px;
+    fill: red;
+    width: 100px;
+    height: 100px;
 }
 #Capa_2 {
   fill: silver;
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
 }
 #Capa_1:hover {
   fill: rgb(255, 128, 128);
@@ -222,10 +233,10 @@ body {
     to   { opacity: 1; }
 }
 #audioControls {
-  text-align: center;
+   text-align: center;
 }
 fieldset {
-  display: inline;
+ /* display: inline; */
   border-radius: 10px; /* 20%/100%; */
   border: 4px solid rgba(0,0,0,0.1);
   padding: 20px;
@@ -234,8 +245,9 @@ fieldset {
 	clear: both;
 }
 #details {
-	text-align: center;
+ 	text-align: center;
 	margin: auto;
+    
 }
 #upload {
 	text-align:center;
@@ -243,19 +255,25 @@ fieldset {
 }
 #submit {
 	text-align:center;
-
 }
 #formDiv {
-text-align: center;
+ text-align: center;
+
 }
 form#form {
    
-  display: inline-block;
+/*  display: inline-block;
   text-align: center;
   margin: auto;
+  */
 }
 #forminner {
-  margin: auto;
+ /* margin: auto; */
+}
+#switchlink2 {
+    /* visibility: hidden;
+    */
+    font-size: smaller;
 }
 </style>
 </head>
@@ -284,6 +302,8 @@ form#form {
   l97.825-24.338c2.442-0.606,5.026-0.057,7.008,1.492c1.982,1.55,3.14,3.925,3.14,6.441V327.593z"/>
       </svg>
       <input type="file" id="fileUpload" accept="audio/*" />
+      <br class="clearAll" />
+      <a id="switchlink2" onclick="switchToRecord()" href="#" title="Record a file instead">Switch to recording</a>
     <!--  <input type="Submit" onclick="submitForm(false); return false" /> -->
    </fieldset>
     </div>
@@ -406,9 +426,11 @@ form#form {
     <div id="uploading"></div>
 <!-- div to show successfully uploaded -->
       <div id="success" style="display:none">
-        <h2>File Uploaded</h2>
+        <h2>File Uploaded Successfully</h2>
         <p>Your file has been successfully uploaded.</p>
-        <p>Thanks for contributing to Source FM Fresh Sources. We hope to broadcast on <a href="sourcefm.co.uk">Source FM</a> in July/August 2018 - so listen in!!!</p>
+        <p>Many thanks for contributing to Source FM Fresh Sources. We hope to broadcast the show on <a href="sourcefm.co.uk">Source FM</a> on August 11<sup>th</sup> 2018 - so please listen in!!!</p>
+        <p>If you'd like to get in touch please email: <a href="mailto: jerry@thesourcefm.co.uk">Jerry</a>
+        </p>
       </div>
 
 
@@ -466,9 +488,15 @@ var file;
 var reader = new FileReader();
 var isRecording;
 
+function switchToRecord(){
+    showGUI();
+    $('#switchlink2').hide();
+}
+
 function switchToUpload(){
     hideGUI();
     onBtnStopClicked();
+    $('#switchlink2').show();
     //$('#audioControls').hide();
    // $('#upload').show();
     $('#details').show();
@@ -700,6 +728,7 @@ $('#failDiv').show();
 }
 
 window.onload = function() {
+    $('#switchlink2').hide();
   failDiv = document.getElementById("failDiv");
   GUIDiv = document.getElementById("GUI");
   navigator.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.getUserMedia ||
@@ -757,6 +786,7 @@ function showSuccess(e) {
     $('#failDiv').hide();
     $('#uploading').hide();
     $('#success').show();
+    location.assign("success.html");
   } else {
     showError(e);
   }

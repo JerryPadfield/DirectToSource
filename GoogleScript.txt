@@ -1,0 +1,59 @@
+/**
+ *
+ * SOME CODE ADAPTED FROM: www.labnol.org/awesome
+ *
+ */
+
+function doGet(e) {
+  return HtmlService.createHtmlOutputFromFile('forms.html')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function uploadFileToGoogleDrive(data, file, name, email, comments) {
+
+  try {
+
+    var dropbox = "Received Files";
+    var folder, folders = DriveApp.getFoldersByName(dropbox);
+
+    if (folders.hasNext()) {
+      folder = folders.next();
+    } else {
+      folder = DriveApp.createFolder(dropbox);
+    }
+
+    var contentType = data.substring(5, data.indexOf(';')),
+        bytes = Utilities.base64Decode(data.substr(data.indexOf('base64,') + 7)),
+        blob = Utilities.newBlob(bytes, contentType, file),
+        file = folder.createFolder([name, email].join(" ")).createFile(blob);
+    var now = new Date();
+
+    file.setDescription("Recording received on " + now.toDateString() + " from " + name + " email: " + email + " " + comments);
+
+    MailApp.sendEmail({
+       to: "jerrypadfield@gmail.com",
+       subject: "Source Record - file received from " + name + "!",
+       htmlBody: "File uploaded to Drive: " + name + ", " + email
+    });
+    if (validateEmail(email)) {
+    //  Logger.log("Sending email to: " + email);
+      MailApp.sendEmail({
+        to: email,
+        subject: "Thank you for contributing to the Fresh Sources project!",
+        htmlBody: "Dear " + name + ",<br>Many thanks for contributing to the Fresh Sources project. The show will go out in August. Stay tuned to Source FM to hear it!"
+      });
+    } else {
+      Logger.log("Problem with email address: " + email);
+    }
+    return "OK";
+
+  } catch (f) {
+    Logger.log("Caught exception: " + f.toString());
+    return f.toString();
+  }
+}
+
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
